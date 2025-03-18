@@ -16,19 +16,19 @@ app.get('/', (req, res) => {
 
 // Rutas para las tareas
 app.get('/api/tasks', (req, res) => {
-  const result = taskModel.listTasks();
+  const result = taskModel.listarElementos();
   res.status(200).json(result);
 });
 
 app.post('/api/tasks', (req, res) => {
   const { title } = req.body;
   if (!title) {
-    return res.status(400).json({ success: false, message: 'El título de la tarea es requerido' });
+    return res.status(400).json({ exito: false, mensaje: 'El título de la tarea es requerido' });
   }
   
-  const result = taskModel.addTask(title);
+  const result = taskModel.agregarElemento(title);
   
-  if (!result.success) {
+  if (!result.exito) {
     return res.status(400).json(result);
   }
   
@@ -37,9 +37,9 @@ app.post('/api/tasks', (req, res) => {
 
 app.delete('/api/tasks/:id', (req, res) => {
   const { id } = req.params;
-  const result = taskModel.removeTask(id);
+  const result = taskModel.eliminarElemento(id);
   
-  if (!result.success) {
+  if (!result.exito) {
     return res.status(404).json(result);
   }
   
@@ -50,17 +50,13 @@ app.put('/api/tasks/:id', (req, res) => {
   const { id } = req.params;
   const { title, completed } = req.body;
   
-  const result = taskModel.updateTask(id, { title, completed });
+  const result = taskModel.actualizarElemento(id, { nombre: title, activo: completed });
   
-  if (!result.success) {
+  if (!result.exito) {
     return res.status(404).json(result);
   }
   
   res.status(200).json(result);
 });
 
-// Puerto y arranque del servidor
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`Servidor ejecutándose en el puerto ${PORT}`);
-});
+module.exports = app;
